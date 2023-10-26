@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "io.home-assistant.community",
-  "version": "1.4.15",
+  "version": "1.5.3",
   "compatibility": ">=8.1.0",
   "sdk": 3,
   "brandColor": "#0DA6EA",
@@ -59,6 +59,118 @@
       {
         "highlight": true,
         "title": {
+          "en": "Alarm has been deactivated",
+          "de": "Alarm wurde deaktiviert",
+          "nl": "Alarm is gedeactiveerd"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_alarm_false"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Alarm has been triggered",
+          "de": "Alarm wurde ausgelöst",
+          "nl": "Alarm werd veroorzaakt"
+        },
+        "hint": {
+          "en": "This event is triggered every time an alarm is triggered.",
+          "de": "Dieses Ereignis wird bei jedem Auslösen eines Alarm ausgelöst.",
+          "nl": "Deze gebeurtenis wordt geactiveerd telkens wanneer een alarm wordt geactiveerd."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_alarm_triggered"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Alarm has been activated",
+          "de": "Alarm wurde aktiviert",
+          "nl": "Alarm is geactiveerd"
+        },
+        "hint": {
+          "en": "The device alarm is activated the first time an alarm is triggered.",
+          "de": "Der Geräte-Alarm wird beim ersten auslösen eines Alarms aktiviert.",
+          "nl": "Het apparaatalarm wordt geactiveerd wanneer er voor de eerste keer een alarm wordt geactiveerd."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_alarm_true"
+      },
+      {
+        "title": {
+          "en": "Alarm mode changed",
+          "de": "Alarm-Modus hat sich geändert",
+          "nl": "Alarmmodus gewijzigd"
+        },
+        "tokens": [
+          {
+            "name": "alarm_control_panel_mode",
+            "type": "string",
+            "title": {
+              "en": "Mode",
+              "de": "Modus",
+              "nl": "Modus"
+            },
+            "example": "disarmed"
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_mode_changed"
+      },
+      {
+        "title": {
+          "en": "Alarm state changed",
+          "de": "Alarm-Status hat sich geändert",
+          "nl": "Alarm toestand gewijzigd"
+        },
+        "tokens": [
+          {
+            "name": "alarm_control_panel_state",
+            "type": "string",
+            "title": {
+              "en": "State",
+              "de": "Status",
+              "nl": "Toestand"
+            },
+            "example": "disarmed"
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_state_changed"
+      },
+      {
+        "highlight": true,
+        "title": {
           "en": "Presence alarm has been deactivated",
           "de": "Präsenz-Alarm wurde deaktiviert",
           "nl": "Aanwezigheidsalarm is gedeactiveerd"
@@ -90,18 +202,58 @@
       },
       {
         "title": {
+          "en": "CPU warning",
+          "de": "CPU-Warnung",
+          "nl": "CPU waarschuwing"
+        },
+        "titleFormatted": {
+          "en": "A CPU warning has occurred",
+          "de": "Eine CPU-Warnung ist aufgetreten",
+          "nl": "Er is een CPU waarschuwing opgetreden"
+        },
+        "hint": {
+          "en": "Triggers when the app is consuming too much CPU time.",
+          "de": "Wird ausgelöst, wenn die app zu viel CPU-Zeit verbraucht.",
+          "nl": "Wordt geactiveerd wanneer de app te veel CPU-tijd verbruikt."
+        },
+        "tokens": [
+          {
+            "name": "count",
+            "type": "number",
+            "example": 5,
+            "title": {
+              "en": "Number of warnings sent",
+              "de": "Anzahl bereits gesendeter Warnungen",
+              "nl": "Aantal verzonden waarschuwingen"
+            }
+          },
+          {
+            "name": "limit",
+            "type": "number",
+            "example": 25,
+            "title": {
+              "en": "Number of maximum warnings until the app is killed",
+              "de": "Anzahl der maximalen Warnungen, bis die App beendet wird",
+              "nl": "Aantal maximale waarschuwingen totdat de app wordt uitgeschakeld"
+            }
+          }
+        ],
+        "id": "app_cpuwarn"
+      },
+      {
+        "title": {
           "en": "Memory warning",
           "de": "Speicherwarnung",
           "nl": "Geheugen waarschuwing"
         },
         "titleFormatted": {
           "en": "A memory warning has occurred",
-          "de": "Eine speicherwarnung ist aufgetreten",
+          "de": "Eine Speicherwarnung ist aufgetreten",
           "nl": "Er is een geheugenwaarschuwing opgetreden"
         },
         "hint": {
           "en": "Triggers when the app is consuming too much memory.",
-          "de": "Wird ausgelöst, wenn die app zu viel speicher verbraucht.",
+          "de": "Wird ausgelöst, wenn die App zu viel Speicher verbraucht.",
           "nl": "Wordt geactiveerd wanneer de app te veel geheugen verbruikt."
         },
         "tokens": [
@@ -1006,6 +1158,179 @@
     "conditions": [
       {
         "title": {
+          "en": "Alarm !{{is|isn't}} on",
+          "de": "Alarm !{{ist|ist nicht}} an",
+          "nl": "Alarm  !{{is|is niet}} aan"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarm_control_panel_alarm"
+      },
+      {
+        "title": {
+          "en": "Alarm mode !{{is|isn't}}",
+          "de": "Alarm-Modus !{{ist|ist nicht}}",
+          "nl": "Alarm modus !{{is|is niet}}"
+        },
+        "titleFormatted": {
+          "en": "Alarm mode !{{is|isn't}} [[mode]]",
+          "de": "Alarm-Modus !{{ist|ist nicht}} [[mode]]",
+          "nl": "Alarm modus !{{is|is niet}} [[mode]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "title": {
+              "en": "Alarm state",
+              "de": "Alarm-Status",
+              "nl": "Alarm toestand"
+            },
+            "values": [
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed",
+                  "de": "Entsichert",
+                  "nl": "Ontgrendeld"
+                }
+              },
+              {
+                "id": "armed_home",
+                "title": {
+                  "en": "Armed at home",
+                  "de": "Gesichert zu Hause",
+                  "nl": "Thuis beveiligd"
+                }
+              },
+              {
+                "id": "armed_away",
+                "title": {
+                  "en": "Armed away",
+                  "de": "Gesichert unterwegs",
+                  "nl": "Veilig onderweg"
+                }
+              },
+              {
+                "id": "armed_night",
+                "title": {
+                  "en": "Armed at night",
+                  "de": "Gesichert nachts",
+                  "nl": "Veilig nacht"
+                }
+              },
+              {
+                "id": "armed_vacation",
+                "title": {
+                  "en": "Armed at vacation",
+                  "de": "Gesichert im Urlaub",
+                  "nl": "Veilig op vakantie"
+                }
+              },
+              {
+                "id": "armed_custom_bypass",
+                "title": {
+                  "en": "Armed custom bypass",
+                  "de": "Gesichert benutzerdefiniert",
+                  "nl": "Veilig aangepast"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "alarm_control_panel_mode"
+      },
+      {
+        "title": {
+          "en": "Alarm state !{{is|isn't}}",
+          "de": "Alarm-Status !{{ist|ist nicht}}",
+          "nl": "Alarm toestand !{{is|is niet}}"
+        },
+        "titleFormatted": {
+          "en": "Alarm state !{{is|isn't}} [[state]]",
+          "de": "Alarm-Status !{{ist|ist nicht}} [[state]]",
+          "nl": "Alarm toestand !{{is|is niet}} [[state]]"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          },
+          {
+            "name": "state",
+            "type": "dropdown",
+            "title": {
+              "en": "Alarm state",
+              "de": "Alarm-Status",
+              "nl": "Alarm toestand"
+            },
+            "values": [
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed",
+                  "de": "Entsichert",
+                  "nl": "Ontgrendeld"
+                }
+              },
+              {
+                "id": "armed",
+                "title": {
+                  "en": "Armed",
+                  "de": "Gesichert",
+                  "nl": "Beveiligd"
+                }
+              },
+              {
+                "id": "pending",
+                "title": {
+                  "en": "Pending",
+                  "de": "In Verarbeitung",
+                  "nl": "In behandeling"
+                }
+              },
+              {
+                "id": "arming",
+                "title": {
+                  "en": "Arming",
+                  "de": "Aktivieren",
+                  "nl": "Activeren"
+                }
+              },
+              {
+                "id": "disarming",
+                "title": {
+                  "en": "Disarming",
+                  "de": "Deaktivieren",
+                  "nl": "Deactiveren"
+                }
+              },
+              {
+                "id": "triggered",
+                "title": {
+                  "en": "Triggered",
+                  "de": "Ausgelöst",
+                  "nl": "Veroorzaakt"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "alarm_control_panel_state"
+      },
+      {
+        "title": {
           "en": "Presence alarm !{{is|isn't}} on",
           "de": "Präsenz-Alarm !{{ist|ist nicht}} an",
           "nl": "Aanwezigheidsalarm  !{{is|is niet}} aan"
@@ -1599,6 +1924,91 @@
       }
     ],
     "actions": [
+      {
+        "highlight": true,
+        "title": {
+          "en": "Select alarm mode",
+          "de": "Wähle Alarm-Modus",
+          "nl": "Stel alarmmodus in"
+        },
+        "titleFormatted": {
+          "en": "Change to alarm mode [[mode]].",
+          "de": "Wechsel zum Alarm-Modus [[mode]].",
+          "nl": "Stel alarmmodus [[mode]] in."
+        },
+        "args": [
+          {
+            "type": "dropdown",
+            "name": "mode",
+            "title": {
+              "en": "Alarm mode",
+              "de": "Alarm-Modus",
+              "nl": "Alarmmodus"
+            },
+            "placeholder": {
+              "en": "Select the alarm mode",
+              "de": "Wähle den Alarm-Modus",
+              "nl": "Selecteer de alarmmodus"
+            },
+            "values": [
+              {
+                "id": "disarmed",
+                "title": {
+                  "en": "Disarmed",
+                  "de": "Entsichert",
+                  "nl": "Ontgrendeld"
+                }
+              },
+              {
+                "id": "armed_home",
+                "title": {
+                  "en": "Armed at home",
+                  "de": "Gesichert zu Hause",
+                  "nl": "Thuis beveiligd"
+                }
+              },
+              {
+                "id": "armed_away",
+                "title": {
+                  "en": "Armed away",
+                  "de": "Gesichert unterwegs",
+                  "nl": "Veilig onderweg"
+                }
+              },
+              {
+                "id": "armed_night",
+                "title": {
+                  "en": "Armed at night",
+                  "de": "Gesichert nachts",
+                  "nl": "Veilig nacht"
+                }
+              },
+              {
+                "id": "armed_vacation",
+                "title": {
+                  "en": "Armed at vacation",
+                  "de": "Gesichert im Urlaub",
+                  "nl": "Veilig op vakantie"
+                }
+              },
+              {
+                "id": "armed_custom_bypass",
+                "title": {
+                  "en": "Armed custom bypass",
+                  "de": "Gesichert benutzerdefiniert",
+                  "nl": "Veilig aangepast"
+                }
+              }
+            ]
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm_control_panel"
+          }
+        ],
+        "id": "alarmControlPanelMode"
+      },
       {
         "id": "callService",
         "title": {
@@ -2257,6 +2667,31 @@
         "id": "genericButtonPress"
       },
       {
+        "title": {
+          "en": "Update device data",
+          "de": "Gerätedaten aktualisieren",
+          "nl": "Apparaatgegevens bijwerken"
+        },
+        "titleFormatted": {
+          "en": "Update device data",
+          "de": "Gerätedaten aktualisieren",
+          "nl": "Apparaatgegevens bijwerken"
+        },
+        "hint": {
+          "en": "Updates the device data with the current entity data including conversion.",
+          "de": "Aktualisiert die Gerätedaten mit den aktuellen Entity-Daten incl. Konvertierung.",
+          "nl": "Werkt de apparaatgegevens bij met de huidige entiteitsgegevens, inclusief conversie."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=custom|compound|climate|climate_fan|fan|water_heater|light|media|switch|vacuum|covers|lock"
+          }
+        ],
+        "id": "genericDeviceUpdate"
+      },
+      {
         "highlight": true,
         "title": {
           "en": "Set number value",
@@ -2306,6 +2741,62 @@
           }
         ],
         "id": "genericNumberSet"
+      },
+      {
+        "highlight": true,
+        "title": {
+          "en": "Select entity option",
+          "de": "Entitäts-Option wählen",
+          "nl": "Selecteer entity optie"
+        },
+        "titleFormatted": {
+          "en": "Select entity option [[value]] of capability [[capability]].",
+          "de": "Wähle Entitäts-Option [[value]] des Attributs [[capability]].",
+          "nl": "Selecteer entity optie [[value]] van het kenmerk [[capability]]."
+        },
+        "hint": {
+          "en": "This option is applicable to 'select.' entities.",
+          "de": "Diese Option ist anwendbar auf 'select.' Entitäten.",
+          "nl": "Deze optie is van toepassing op 'select.' entiteiten."
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "capability",
+            "required": true,
+            "title": {
+              "en": "Capability",
+              "de": "Attribut",
+              "nl": "Capability"
+            },
+            "placeholder": {
+              "en": "Option",
+              "de": "Option",
+              "nl": "Optie"
+            }
+          },
+          {
+            "type": "autocomplete",
+            "name": "value",
+            "required": true,
+            "title": {
+              "en": "Value",
+              "de": "Wert",
+              "nl": "Waarde"
+            },
+            "placeholder": {
+              "en": "Option",
+              "de": "Option",
+              "nl": "Optie"
+            }
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=custom|climate|climate_fan|fan|water_heater|light|media|sensor|switch|vacuum|cover|camera"
+          }
+        ],
+        "id": "genericSelect"
       },
       {
         "highlight": true,
@@ -3345,6 +3836,294 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "icon",
+          "navigation": {
+            "next": "icon_change",
+            "prev": "select"
+          }
+        },
+        {
+          "id": "icon_change",
+          "navigation": {
+            "prev": "icon"
+          }
+        },
+        {
+          "id": "capability_update_dlg",
+          "navigation": {
+            "next": "capability_update",
+            "prev": "select"
+          }
+        },
+        {
+          "id": "capability_update",
+          "navigation": {
+            "prev": "capability_update_dlg"
+          }
+        },
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "navigation": {
+            "prev": "select"
+          },
+          "options": {
+            "logo": "../../../assets/images/logo.png",
+            "usernameLabel": {
+              "en": "Server"
+            },
+            "usernamePlaceholder": {
+              "en": "http://192.168.xxx.xxx:8123"
+            },
+            "passwordLabel": {
+              "en": "Token"
+            },
+            "passwordPlaceholder": {
+              "en": "Long-lived access token"
+            }
+          }
+        },
+        {
+          "id": "done",
+          "template": "done"
+        }
+      ],
+      "id": "alarm_control_panel",
+      "name": {
+        "en": "Alarm control panel",
+        "de": "Alarmzentrale",
+        "nl": "Alarmbedieningspaneel"
+      },
+      "class": "homealarm",
+      "capabilities": [
+        "alarm_control_panel_mode",
+        "alarm_control_panel_state",
+        "button.reconnect"
+      ],
+      "images": {
+        "large": "/drivers/alarm_control_panel/assets/images/large.png",
+        "small": "/drivers/alarm_control_panel/assets/images/small.png"
+      },
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Device entities",
+            "de": "Geräte-Entitäten",
+            "nl": "Apparaat entiteiten"
+          },
+          "children": [
+            {
+              "id": "add_device_sensor",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Show device sensors",
+                "de": "Zeige Geräte-Sensoren",
+                "nl": "Apparaatsensoren weergeven"
+              },
+              "hint": {
+                "en": "Add sensor entities from HA device where this entity is assigned to.",
+                "de": "Füge Sensor-Entitäten des HA-Gerätes hinzu, dem diese Entität zugeordnet ist.",
+                "nl": "Voeg sensor entiteiten toe vanaf het HA-apparaat waaraan deze entiteit is toegewezen."
+              }
+            },
+            {
+              "id": "add_device_sensor_diagnostic",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Show device diagnostic sensors",
+                "de": "Zeige Geräte-Diagnosesensoren",
+                "nl": "Diagnostische sensoren voor apparaat weergeven"
+              },
+              "hint": {
+                "en": "Add diagnostic sensor entities from HA device where this entity is assigned to.",
+                "de": "Füge Diagnosesensor-Entitäten des HA-Gerätes hinzu, dem diese Entität zugeordnet ist.",
+                "nl": "Voeg diagnostische sensor entiteiten toe vanaf het HA-apparaat waaraan deze entiteit is toegewezen."
+              }
+            },
+            {
+              "id": "add_device_switch",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Show device switches",
+                "de": "Zeige Geräte-Schalter",
+                "nl": "Apparaatschakelaars weergeven"
+              },
+              "hint": {
+                "en": "Add switch entities from HA device where this entity is assigned to.",
+                "de": "Füge Schalter-Entitäten des HA-Gerätes hinzu, dem diese Entität zugeordnet ist.",
+                "nl": "Voeg schakelaar entiteiten toe vanaf het HA-apparaat waaraan deze entiteit is toegewezen."
+              }
+            },
+            {
+              "id": "add_device_button",
+              "type": "checkbox",
+              "value": false,
+              "label": {
+                "en": "Show device buttons",
+                "de": "Zeige Geräte-Buttons",
+                "nl": "Toon apparaatknoppen"
+              },
+              "hint": {
+                "en": "Add button entities from HA device where this entity is assigned to.",
+                "de": "Füge Button-Entitäten des HA-Gerätes hinzu, dem diese Entität zugeordnet ist.",
+                "nl": "Voeg knoppen entiteiten toe vanaf het HA-apparaat waaraan deze entiteit is toegewezen."
+              }
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Device settings",
+            "de": "Geräte-Einstellungen",
+            "nl": "Apparaat instellingen"
+          },
+          "children": [
+            {
+              "id": "code",
+              "type": "password",
+              "label": {
+                "en": "Code",
+                "de": "Code",
+                "nl": "Code"
+              },
+              "value": "",
+              "hint": {
+                "en": "The PIN code of your alarm control panel.",
+                "de": "Der PIN-Code Ihrer Alarmzentrale.",
+                "nl": "De pincode van uw alarmcentrale."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "capabilitiesOptions": {
+        "button.reconnect": {
+          "maintenanceAction": true,
+          "title": {
+            "en": "Reconnect",
+            "de": "Neu verbinden",
+            "nl": "Opnieuw verbinden"
+          },
+          "desc": {
+            "en": "Reconnect and reload entities.",
+            "de": "Neu verbinden und Entitäten neu laden.",
+            "nl": "Maak opnieuw verbinding en laad entiteiten opnieuw."
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "loading",
+          "template": "loading",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "options": {
+            "logo": "../../../assets/images/logo.png",
+            "usernameLabel": {
+              "en": "Server"
+            },
+            "usernamePlaceholder": {
+              "en": "http://192.168.xxx.xxx:8123"
+            },
+            "passwordLabel": {
+              "en": "Token"
+            },
+            "passwordPlaceholder": {
+              "en": "Long-lived access token"
+            }
+          }
+        },
+        {
+          "id": "list_devices",
+          "options": {
+            "singular": false
+          }
+        },
+        {
+          "id": "icon",
+          "navigation": {
+            "next": "add_devices",
+            "prev": "list_devices"
+          }
+        },
+        {
+          "id": "add_devices"
+        }
+      ],
+      "repair": [
+        {
+          "id": "select",
+          "navigation": {
+            "prev": "done"
+          }
+        },
+        {
+          "id": "add_entity",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "change_entity",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "remove_entity",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "device_details",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -3506,6 +4285,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -3743,6 +4534,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -4013,6 +4816,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -4323,6 +5138,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -4785,6 +5612,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -4852,6 +5691,7 @@
         "windowcoverings_tilt_down",
         "windowcoverings_tilt_set",
         "windowcoverings_opened",
+        "garagedoor_closed",
         "button.reconnect"
       ],
       "images": {
@@ -5024,6 +5864,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -5431,6 +6283,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -5714,6 +6578,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -6041,6 +6917,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -6203,6 +7091,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -6461,6 +7361,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -6640,6 +7552,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -6786,6 +7710,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -7000,6 +7936,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -7161,6 +8109,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -7458,6 +8418,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -7736,6 +8708,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -7948,6 +8932,18 @@
         },
         {
           "id": "log",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
           "navigation": {
             "prev": "select"
           }
@@ -8213,6 +9209,18 @@
           }
         },
         {
+          "id": "log_settings",
+          "navigation": {
+            "prev": "log"
+          }
+        },
+        {
+          "id": "statistics",
+          "navigation": {
+            "prev": "select"
+          }
+        },
+        {
           "id": "icon",
           "navigation": {
             "next": "icon_change",
@@ -8377,6 +9385,191 @@
     }
   ],
   "capabilities": {
+    "alarm_control_panel_alarm": {
+      "type": "boolean",
+      "title": {
+        "en": "Alarm",
+        "de": "Alarm",
+        "nl": "Alarm"
+      },
+      "insights": true,
+      "insightsTitleTrue": {
+        "en": "Alarm turned on",
+        "de": "Alarm ist angegangen",
+        "nl": "Alarm ging af"
+      },
+      "insightsTitleFalse": {
+        "en": "Alarm turned off",
+        "de": "Alarm ist ausgegangen",
+        "nl": "Alarm ging uit"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/capability_icons/alarm_control_panel_alarm.svg"
+    },
+    "alarm_control_panel_alarm_reset": {
+      "type": "boolean",
+      "title": {
+        "en": "Reset alarm",
+        "de": "Alarm zurücksetzen",
+        "nl": "Alarm opnieuw instellen"
+      },
+      "uiComponent": "button",
+      "insights": false,
+      "getable": false,
+      "setable": true,
+      "icon": "/assets/capability_icons/alarm_control_panel_alarm_reset.svg"
+    },
+    "alarm_control_panel_alarm_trigger": {
+      "type": "boolean",
+      "title": {
+        "en": "Trigger alarm",
+        "de": "Alarm auslösen",
+        "nl": "Alarm activeren"
+      },
+      "uiComponent": "button",
+      "insights": false,
+      "getable": false,
+      "setable": true,
+      "icon": "/assets/capability_icons/alarm_control_panel_alarm_trigger.svg"
+    },
+    "alarm_control_panel_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Mode",
+        "de": "Modus",
+        "nl": "Modus"
+      },
+      "desc": {
+        "en": "Alarm mode",
+        "de": "Alarm-Modus",
+        "nl": "Alarm modus"
+      },
+      "getable": true,
+      "setable": true,
+      "insights": true,
+      "icon": "/assets/capability_icons/alarm_control_panel_mode.svg",
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "disarmed",
+          "title": {
+            "en": "Disarmed",
+            "de": "Entsichert",
+            "nl": "Ontgrendeld"
+          }
+        },
+        {
+          "id": "armed_home",
+          "title": {
+            "en": "Armed at home",
+            "de": "Gesichert zu Hause",
+            "nl": "Thuis beveiligd"
+          }
+        },
+        {
+          "id": "armed_away",
+          "title": {
+            "en": "Armed away",
+            "de": "Gesichert unterwegs",
+            "nl": "Veilig onderweg"
+          }
+        },
+        {
+          "id": "armed_night",
+          "title": {
+            "en": "Armed at night",
+            "de": "Gesichert nachts",
+            "nl": "Veilig nacht"
+          }
+        },
+        {
+          "id": "armed_vacation",
+          "title": {
+            "en": "Armed at vacation",
+            "de": "Gesichert im Urlaub",
+            "nl": "Veilig op vakantie"
+          }
+        },
+        {
+          "id": "armed_custom_bypass",
+          "title": {
+            "en": "Armed custom bypass",
+            "de": "Gesichert benutzerdefiniert",
+            "nl": "Veilig aangepast"
+          }
+        }
+      ]
+    },
+    "alarm_control_panel_state": {
+      "type": "enum",
+      "title": {
+        "en": "State",
+        "de": "Status",
+        "nl": "Toestand"
+      },
+      "desc": {
+        "en": "Alarm state",
+        "de": "Alarm-Status",
+        "nl": "Alarm toestand"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "icon": "/assets/capability_icons/alarm_control_panel_state.svg",
+      "uiComponent": "sensor",
+      "values": [
+        {
+          "id": "disarmed",
+          "title": {
+            "en": "Disarmed",
+            "de": "Entsichert",
+            "nl": "Ontgrendeld"
+          }
+        },
+        {
+          "id": "armed",
+          "title": {
+            "en": "Armed",
+            "de": "Gesichert",
+            "nl": "Beveiligd"
+          }
+        },
+        {
+          "id": "pending",
+          "title": {
+            "en": "Pending",
+            "de": "In Verarbeitung",
+            "nl": "In behandeling"
+          }
+        },
+        {
+          "id": "arming",
+          "title": {
+            "en": "Arming",
+            "de": "Aktivieren",
+            "nl": "Activeren"
+          }
+        },
+        {
+          "id": "disarming",
+          "title": {
+            "en": "Disarming",
+            "de": "Deaktivieren",
+            "nl": "Deactiveren"
+          }
+        },
+        {
+          "id": "triggered",
+          "title": {
+            "en": "Triggered",
+            "de": "Ausgelöst",
+            "nl": "Veroorzaakt"
+          }
+        }
+      ]
+    },
     "alarm_presence": {
       "type": "boolean",
       "title": {
@@ -8910,6 +10103,30 @@
       "setable": true,
       "icon": "/assets/capability_icons/onoff_button.svg"
     },
+    "onoff_state": {
+      "type": "boolean",
+      "title": {
+        "en": "Turned on",
+        "de": "Eingeschaltet",
+        "nl": "Aangezet"
+      },
+      "insightsTitleTrue": {
+        "en": "Turned on",
+        "de": "Eingeschaltet",
+        "nl": "Aangezet"
+      },
+      "insightsTitleFalse": {
+        "en": "Turned off",
+        "de": "Ausgeschaltet",
+        "nl": "Uitgezet"
+      },
+      "uiQuickAction": true,
+      "uiComponent": null,
+      "insights": true,
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/capability_icons/onoff_state.svg"
+    },
     "presence_state": {
       "type": "string",
       "title": {
@@ -9340,12 +10557,13 @@
       "getable": true,
       "setable": false,
       "uiComponent": null,
-      "insights": true,
+      "insights": false,
       "title": {
         "en": "Cover opened",
         "de": "Fensterabdeckung geöffnet",
         "nl": "Raamafdekking geopend"
       },
+      "preventInsights": true,
       "titleTrue": {
         "en": "Opened",
         "de": "Geöffnet",

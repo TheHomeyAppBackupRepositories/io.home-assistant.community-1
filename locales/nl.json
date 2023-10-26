@@ -33,6 +33,7 @@
             "app_restart": "Na een pictogramwijziging moet de app opnieuw worden gestart om de wijziging door te voeren.",
             "device_details": "Apparaat details",
             "log": "Toepassingslogboek",
+            "statistics": "Toepassingsstatistieken",
             "update_capabilities_title": "Apparaat bijwerken/resetten",
             "update_capabilities_text": "De huidige apparaatmogelijkheden (capabilities) worden verwijderd en opnieuw toegevoegd, afhankelijk van de HomeAssistant-entiteit.",
             "update_capabilities_ready": "Apparaatmogelijkheden (capabilities) zijn bijgewerkt.",
@@ -40,7 +41,33 @@
             "add_entity": "Entiteit toevoegen",
             "change_entity": "Entiteit aanpassen",
             "remove_entity": "Entiteit verwijderen",
-            "maintenance": "Onderhoud"
+            "maintenance": "Onderhoud",
+            "refresh": "Vernieuwen"
+        },
+        "log": {
+            "settings_title": "Log-instellingen",
+            "refresh": "Vernieuwen",
+            "settings": "Instellingen",
+            "group_extended": "Uitgebreide logboekregistratie",
+            "entity_states": "Entiteitsstatussen",
+            "events": "Evenementen"
+        },
+        "statistics":{
+            "title_overview": "Overzicht",
+            "title_short": "Berichten: 30 seconden",
+            "title_sum": "Berichten: algemeen",
+            "title_app": "App",
+            "title_connect": "Koppelingen",
+            "entities_monitored": "Gecontroleerde entities",
+            "entities": "Entities",
+            "entity_list_updates": "Updates van entity lijst",
+            "entitiy_list_amount": "Items in de entity lijst",
+            "entity_states": "Entity status verandert",
+            "events": "Evenementen",
+            "startup": "App starten",
+            "last_connect": "Laatste verbinding",
+            "connects": "Koppelingen",
+            "refresh": "Vernieuwen"
         },
         "custom_device": {
             "entity": "Entiteit",
@@ -58,6 +85,17 @@
             "number_range_step": "Verhoging",
             "converter_ha2homey": "Converter functie HA->Homey",
             "converter_homey2HA": "Converter functie Homey->HA",
+            "converter_example_placeholder": "Selecteer voorbeeld...",
+            "converter_text_01": "Numeric calculation 0..1 => 0..100 %",
+            "converter_code_01": "(value) => { return parseFloat(value) * 100; }",
+            "converter_text_02": "Numeric calculation 0..100 % => 0..1",
+            "converter_code_02": "(value) => { return parseFloat(value) / 100; }",
+            "converter_text_03": "Date conversion UTC->local",
+            "converter_code_03": "(value) => {\nreturn new Date(value).toLocaleString(\n  'de-DE',\n  {\n    hour12s: false,\n    hour: '2-digit',\n    minute: '2-digit',\n    day: '2-digit',\n    month: '2-digit',\n    year: 'numeric'\n  });\n}",
+            "converter_text_04": "Temperatuur conversie °F=>°C",
+            "converter_code_04": "(value) => { return (parseFloat(value) - 32) * 5/9; }",
+            "converter_text_05": "Waarde uit tekenreeks halen: 'In 3 minutes' => 3",
+            "converter_code_05": "(value) => { return value.split(' ')[1]; }",
             "add_as_main_capability": "Voeg toe als hoofdfunctie",
             "result_count_01": "Show",
             "result_count_02": "van",
@@ -78,6 +116,7 @@
         }
     },
     "device_unavailable_reason": {
+        "not_connected": "Home Assistant is niet verbonden",
         "entity_not_found": "Home Assistant-entiteit bestaat niet",
         "entity_unavailable": "Home Assistant-entiteit heeft de status 'niet beschikbaar'"
     },

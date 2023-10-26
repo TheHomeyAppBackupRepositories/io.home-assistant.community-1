@@ -217,6 +217,12 @@ class BaseDevice extends Homey.Device {
                 data.state == undefined ){
                 return;
             }
+
+            // Extended app log: log all entity updates
+            if (this.homey.app.getLogSettings()['entityState']){
+                this.log("Entity state changed: Entity: "+data.entity_id+" State: "+data.state+" Attributes:",data.attributes);
+            }
+
             // Availability check for state only for devices based on a entity - and only if this main entity is unavailable
             if (this.entityId == data.entity_id){
                 if (data.state == "unavailable"){
@@ -245,13 +251,18 @@ class BaseDevice extends Homey.Device {
         try{
             let client = this.getClient();
             if (client != undefined){
-                let entity = this._client.getEntity(this.entityId);
-                if (entity == null){
-                    await this.setUnavailable(this.homey.__("device_unavailable_reason.entity_not_found"));
+                if (!this._client.isConnected()){
+                    await this.setUnavailable(this.homey.__("device_unavailable_reason.not_connected"));
                 }
                 else{
-                    // this.setAvailable();
-                    this.onEntityUpdate(entity);
+                    let entity = this._client.getEntity(this.entityId);
+                    if (entity == null){
+                        await this.setUnavailable(this.homey.__("device_unavailable_reason.entity_not_found"));
+                    }
+                    else{
+                        // this.setAvailable();
+                        this.onEntityUpdate(entity);
+                    }
                 }
             }
         }
@@ -487,7 +498,7 @@ class BaseDevice extends Homey.Device {
                         tokens.value_number = newValue;
                         await this.setCapabilityValue(keys[i], newValue);
                     }
-                    else if (keys[i].startsWith("switch") || keys[i].startsWith("input_boolean") || keys[i].startsWith("onoff_button") ){
+                    else if (keys[i].startsWith("switch") || keys[i].startsWith("input_boolean") || keys[i].startsWith("onoff_button") || keys[i].startsWith("onoff_state") ){
                         // boolean capability
                         if (converter != undefined){
                             newValue = converter(entityValue);
@@ -811,7 +822,7 @@ class BaseDevice extends Homey.Device {
 
     // Generic Flow functions ===========================================================================================
     // Flow Trigger 
-    getAutocompleteCapabilityList(addStandardCapabilities=false){
+    getAutocompleteCapabilityList(addStandardCapabilities=false, domain){
         // get device entities capabilities
         let capabilities = this.getDeviceEntitiesCapabilities();
         let result = [];
@@ -822,6 +833,9 @@ class BaseDevice extends Homey.Device {
             }
             catch(error){continue;}
             try{
+                if (domain != undefined && domain != capabilitiesOptions.entity_id.split('.')[0]){
+                    continue;
+                }
                 let name;
                 if (capabilitiesOptions.title){
                     name = capabilitiesOptions.title;
@@ -829,9 +843,10 @@ class BaseDevice extends Homey.Device {
                 else{
                     name = capabilitiesOptions.entity_id;
                 }
-            result.push({
+                result.push({
                     id: capabilities[i],
-                    name: name
+                    name: name,
+                    entityId: capabilitiesOptions.entity_id
                 })
             }
             catch(error){this.log("getAutocompleteCapabilityList(): "+error.message)}
@@ -914,7 +929,26 @@ class BaseDevice extends Homey.Device {
         }
         return result;
     }
-    
+
+    getAutocompleteSelectValueList(entityId){
+        try{
+            let result = [];
+            let entity = this._client.getEntity(entityId);
+            if (entity && entity.attributes && entity.attributes.options){
+                for (let i=0; i<entity.attributes.options.length; i++){
+                    result.push({
+                        id: entity.attributes.options[i],
+                        name: entity.attributes.options[i]
+                    });
+                }
+            }
+            return result;
+        }
+        catch(error){
+            this.error("Error reading fan list: "+error.message);
+        }   
+    }
+
     async flowActionSwitchAction(capability, action){
         let valueObj = {};
         switch (action){
@@ -986,6 +1020,19 @@ class BaseDevice extends Homey.Device {
         }
         await this._client.callService("scene", "turn_on", {}, target);
     }
+
+    async flowActionSelect(entityId, value){
+        await this._client.callService("select", "select_option", {
+            "entity_id": entityId,
+            "option": value
+        });
+        return true;
+    }
+
+    async flowActionUpdateDevice(){
+        this.onInitDevice();
+    }
+
 
     // async httpGet(url, options){
     //     return new Promise( ( resolve, reject ) =>

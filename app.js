@@ -11,8 +11,9 @@ const { join } = require('path');
 const Client = require('./lib/Client.js');
 const colors = require('./lib/colors.json');
 const RECONNECT_TIMEOUT = 15;
-const AVAILABILITY_CHECK_TIMEOUT = 30;
+const AVAILABILITY_CHECK_TIMEOUT = 10;
 const LOG_SIZE = 50;
+const STATISTICS_TIMEOUT = 30;
 
 
 const logList = [];
@@ -98,9 +99,14 @@ class App extends Homey.App {
 			}
 		}
 
+		// app settings
+		this._appSettings = {};
+		this._appSettings['logSettings'] = this.homey.settings.get('logSettings');
+
 		// Homey events
 		this.homey.on('unload', async () => await this.onUninit());
 		this.homey.on('memwarn', async (data) => await this.onMemwarn(data));
+		this.homey.on('cpuwarn', async (data) => await this.onCpuwarn(data));
 		// this.homey.on('__log', (...args) => this.onLog(...args));
 		// this.homey.on('__error', (...args) => this.onError(...args));
 		// this.homey.on('__debug', (...args) => this.onDebug(...args));
@@ -147,6 +153,7 @@ class App extends Homey.App {
 
 		// Init device with a short timeout to wait for initial entities
 		this.timeoutCheckConnection = this.homey.setTimeout(async () => this.onCheckConnection().catch(e => console.log(e)), RECONNECT_TIMEOUT * 60 * 1000 );
+		this.timeoutStatistics = this.homey.setTimeout(async () => this.onStatistics().catch(e => console.log(e)), STATISTICS_TIMEOUT * 1000 );
 		
 	}
 
@@ -230,6 +237,32 @@ class App extends Homey.App {
 			const genericNumberList = args.device.getAutocompleteCapabilityList();
 			return genericNumberList.filter((result) => { 
 				return ( result.id.startsWith('dim.') && result.name.toLowerCase().includes(query.toLowerCase()));
+			});
+			
+		});
+
+		this._flowActionGenericSelect = this.homey.flow.getActionCard('genericSelect');
+		this._flowActionGenericSelect.registerRunListener(async (args, state) => {
+			try{
+				await args.device.flowActionSelect(args.capability.entityId, args.value.id);
+				return true;
+			}
+			catch(error){
+				this.error("Error executing flowAction 'genericSelect': "+  error.message);
+				throw new Error(error.message);
+			}
+		});
+		this._flowActionGenericSelect.registerArgumentAutocompleteListener('capability', async (query, args) => {
+			const genericSelectCapabilityList = args.device.getAutocompleteCapabilityList(false, 'select');
+			return genericSelectCapabilityList.filter((result) => { 
+				return ( result.name.toLowerCase().includes(query.toLowerCase()));
+			});
+			
+		});
+		this._flowActionGenericSelect.registerArgumentAutocompleteListener('value', async (query, args) => {
+			const genericSelectValueList = args.device.getAutocompleteSelectValueList(args.capability.entityId, args.value);
+			return genericSelectValueList.filter((result) => { 
+				return ( result.name.toLowerCase().includes(query.toLowerCase()));
 			});
 			
 		});
@@ -832,12 +865,41 @@ class App extends Homey.App {
 				throw new Error(error.message);
 			}
 		});
+
+		// Alarm control panel
+		this._flowActionAlarmControlPanelMode = this.homey.flow.getActionCard('alarmControlPanelMode');
+		this._flowActionAlarmControlPanelMode.registerRunListener(async (args, state) => {
+			try{
+				await args.device.flowActionAlarmControlPanelMode(args);
+				return true;
+			}
+			catch(error){
+				this.error("Error executing flowAction 'alarmControlPanelMode': "+  error.message);
+				throw new Error(error.message);
+			}
+		});
+
+		// Generic device actions
+		this._flowActionGenericDeviceUpdate = this.homey.flow.getActionCard('genericDeviceUpdate');
+		this._flowActionGenericDeviceUpdate.registerRunListener(async (args, state) => {
+			try{
+				await args.device.flowActionUpdateDevice();
+				return true;
+			}
+			catch(error){
+				this.error("Error executing flowAction 'genericDeviceUpdate': "+  error.message);
+				throw new Error(error.message);
+			}
+		});
+
+
 	}
 
 	// FLOW TRIGGER ======================================================================================
 	async _registerFlowTriggers(){
 		// Flow Trigger: App
 		this._flowTriggerAppMemwarn = this.homey.flow.getTriggerCard('app_memwarn');
+		this._flowTriggerAppCpuwarn = this.homey.flow.getTriggerCard('app_cpuwarn');
 
 		this._flowTriggerScriptStartedFilter = this.homey.flow.getTriggerCard("script_started_filter");
         this._flowTriggerScriptStartedFilter.registerRunListener(async (args, state) => {
@@ -915,6 +977,8 @@ class App extends Homey.App {
 		this._flowTriggerTimerCancelled = this.homey.flow.getDeviceTriggerCard('timer_cancelled');
 		this._flowTriggerTimerRestarted = this.homey.flow.getDeviceTriggerCard('timer_restarted');
 		this._flowTriggerTimerFinished = this.homey.flow.getDeviceTriggerCard('timer_finished');
+
+		this._flowTriggerAlarmControlPanelTriggered = this.homey.flow.getDeviceTriggerCard('alarm_control_panel_alarm_triggered');
 	}
 
 	// FLOW CONDITIONS ======================================================================================
@@ -1072,6 +1136,18 @@ class App extends Homey.App {
 		.registerRunListener(async (args, state) => {
 			return (args.device.getCapabilityValue('timer_state') == 'active');
 		})
+		this._flowConditionAlarmControlPanelState = this.homey.flow.getConditionCard('alarm_control_panel_state')
+		.registerRunListener(async (args, state) => {
+			return (args.device.getCapabilityValue('alarm_control_panel_state') == args.state);
+		})
+		this._flowConditionAlarmControlPanelAlarm = this.homey.flow.getConditionCard('alarm_control_panel_alarm')
+		.registerRunListener(async (args, state) => {
+			return (args.device.getCapabilityValue('alarm_control_panel_alarm'));
+		})
+		this._flowConditionAlarmControlPanelMode = this.homey.flow.getConditionCard('alarm_control_panel_mode')
+		.registerRunListener(async (args, state) => {
+			return (args.device.getCapabilityValue('alarm_control_panel_mode') == args.mode);
+		})
 	}
 
 	// FLOW ARGUMENTS ======================================================================================
@@ -1114,11 +1190,29 @@ class App extends Homey.App {
 		return logList;
 	}
 
+	setLogSettings(settings){
+		this.homey.settings.set('logSettings', settings);
+		this._appSettings['logSettings'] = settings;
+	}
+
+	getLogSettings(){
+		if (this._appSettings['logSettings'] == undefined){
+			return {};
+		}
+		else{
+			return this._appSettings['logSettings'];
+		}
+	}
+
 	async onUninit(){
 		this.log("App onUninit() - close connection");
 		if (this.timeoutCheckConnection){
             this.homey.clearTimeout(this.timeoutCheckConnection);
             this.timeoutCheckConnection = null;     
+		}
+		if (this.timeoutStatistics){
+            this.homey.clearTimeout(this.timeoutStatistics);
+            this.timeoutStatistics = null;     
 		}
 		await this._client.close();
 		this._client = null;
@@ -1134,7 +1228,50 @@ class App extends Homey.App {
 			};
 		}
 		this._flowTriggerAppMemwarn.trigger(data).catch(error => this.log("onMemwarn() flow trigger error: ", error.message));
+
+		// Trigger extended crash log. Call async function without await and raise error...
+		if (data.count == data.limit - 2){
+			this.extendedCrashLog("Memory Warning " + data.count + "/" + data.limit);
+		}
 	}
+
+	async onCpuwarn(data){
+		this.log("A CPU warning has occured.");
+		if (data == undefined){
+			data = {
+				count: 0,
+				limit: 0
+			};
+		}
+		this._flowTriggerAppCpuwarn.trigger(data).catch(error => this.log("onCpuwarn() flow trigger error: ", error.message));
+
+		// Trigger extended crash log. Call async function without await and raise error...
+		if (data.count == data.limit - 2){
+			this.extendedCrashLog("CPU Warning " + data.count + "/" + data.limit);
+		}
+	}
+
+	logStatistics(){
+		let statistics = this._client.getStatistics();
+		this.log("Statistics: Entities monitored: " + statistics.overview.entities);
+		this.log("Statistics: App start: " + statistics.overview.startup);
+		this.log("Statistics: Last connect: " + statistics.overview.lastConnect);
+		this.log("Statistics: Connects: " + statistics.overview.connects);
+		this.log("Statistics: Overall EntityListUpdates: " + statistics.sum.entityUpdates + " EntityLisUpdates: " + statistics.sum.entityUpdatesElements + " EntityStates: " + statistics.sum.entityStates + " Events: " + statistics.sum.events);
+		this.log("Statistics: 30sec   EntityListUpdates: " + statistics.short.entityUpdates + " EntityLisUpdates: " + statistics.short.entityUpdatesElements + " EntityStates: " + statistics.short.entityStates + " Events: " + statistics.short.events);
+		this.log("Statistics: current EntityListUpdates: " + statistics.current.entityUpdates + " EntityLisUpdates: " + statistics.current.entityUpdatesElements + " EntityStates: " + statistics.current.entityStates + " Events: " + statistics.current.events);
+	}
+
+	async extendedCrashLog(reason=''){
+		this.log("Trigger extended crash log. Reason: "+reason);
+		this.logStatistics();
+		let log = this.getLog();
+		let logText = '';
+		for (let i=log.length; i>0; i--){
+			logText += log[i-1] + '\n';
+		}
+		throw new Error("Extended crash log...\n" + logText);
+	} 
 
 	getClient() {
 		return this._client;
@@ -1294,6 +1431,20 @@ class App extends Homey.App {
 
 	async clientReconnect(){
 		await this._reconnectClient();
+	}
+
+	async onStatistics(){
+		this.timeoutStatistics = this.homey.setTimeout(async () => this.onStatistics().catch(e => console.log(e)), STATISTICS_TIMEOUT * 1000 );
+		if (this._client){
+			// this.log("Statistics: ", this._client.getStatistics());
+			this._client.clearStatistics();
+		}
+	}
+
+	async getStatistics(){
+		if (this._client){
+			return this._client.getStatistics();
+		}
 	}
 
 	async onCheckConnection(){

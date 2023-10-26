@@ -74,26 +74,43 @@ class ClimateDevice extends BaseDevice {
         await super.onEntityUpdate(data);
         try{
             if(data && data.entity_id && this.entityId == data.entity_id) {
+                let ha_units = {};
+                try{
+                    ha_units = this.getClient().getConfig().unit_system;
+                }
+                catch(error){ ha_units = {} }
+
                 if (data.state != undefined && 
                     data.state != "unavailable"){
-                    await this.setCapabilityValue("climate_mode", data.state);
+                    try{
+                        await this.setCapabilityValue("climate_mode", data.state);
+                    }
+                    catch(error){ }
                 }
                 if (data.state != undefined ){ 
                     if (data.state == "unavailable" || data.state == 'off'){
                         await this.setCapabilityValue("climate_on", false);
                     }
-                    if (data.state == "unavailable" || data.state == 'on'){
+                    else{
                         await this.setCapabilityValue("climate_on", true);
                     }
                 }
                 if (data.attributes.current_temperature != undefined && 
                     data.attributes.current_temperature != "unavailable"){
-                    await this.setCapabilityValue("measure_temperature", data.attributes.current_temperature);
+                    let temp = data.attributes.current_temperature;
+                    if (ha_units.temperature == '°F'){
+                        temp = (temp - 32) * 5/9;
+                    }
+                    await this.setCapabilityValue("measure_temperature", temp);
                 }
                 if (this.hasCapability("target_temperature") && 
                     data.attributes.temperature != undefined &&
                     data.attributes.temperature != "unavailable"){
-                    await this.setCapabilityValue("target_temperature", data.attributes.temperature);
+                    let temp = data.attributes.temperature;
+                    if (ha_units.temperature == '°F'){
+                        temp = (temp - 32) * 5/9;
+                    }
+                    await this.setCapabilityValue("target_temperature", temp);
                 }
                 if (this.hasCapability("measure_humidity") && 
                     data.attributes.current_humidity != undefined &&

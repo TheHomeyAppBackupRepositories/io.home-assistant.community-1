@@ -56,7 +56,7 @@ class CameraDevice extends BaseDevice {
     async onEntityUpdate(data) {
         await super.onEntityUpdate(data);
 
-        if(data && data.entity_id && data.entity_id == this.entityId) {
+        if(data && data.entity_id && data.entity_id == this.entityId && this.mediaImage) {
             switch (data.state){
                 case "on":
                     if (this.hasCapability("onoff")){
@@ -95,13 +95,17 @@ class CameraDevice extends BaseDevice {
                             });
                         }
                     }
-                    await this.mediaImage.update();
+                    if (this.mediaImage){
+                        await this.mediaImage.update();
+                    }
                 }
             }
             else{
                 if (this.mediaCover != null){
-                    this.mediaImage.setUrl(null);
-                    await this.mediaImage.update();
+                    if (this.mediaImage){
+                        this.mediaImage.setUrl(null);
+                        await this.mediaImage.update();
+                    }
                     this.mediaCover = null;
                 }
             }
@@ -135,7 +139,23 @@ class CameraDevice extends BaseDevice {
             throw new Error("Camera image error");
         }
     }
-    
+
+    stream2buffer(stream) {
+        return new Promise((resolve, reject) => {
+            const _buf = [];
+            stream.on("data", (chunk) => _buf.push(chunk));
+            stream.on("end", () => resolve(Buffer.concat(_buf)));
+            stream.on("error", (err) => reject(err));
+        });
+    } 
+
+    buffer2stream(buffer) {  
+        let stream = new (require('stream').Duplex)();
+        stream.push(buffer);
+        stream.push(null);
+        return stream;
+    }
+
     // Settings ================================================================================================
     async onSettings(settings){
         // try {
